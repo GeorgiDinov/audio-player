@@ -10,7 +10,7 @@ package eu.deltasource.audioplayer.playable.audioplayable;
 //        Напишете метод, който да извежда в конзолата форматирано заглавието на песента и
 //        автора.
 
-import static eu.deltasource.audioplayer.MyErrorMessages.INVALID_PARAMETER_MESSAGE;
+import static eu.deltasource.audioplayer.MyMessages.INVALID_PARAMETER_MESSAGE;
 
 public class Song implements AudioPlayable {
 
@@ -18,9 +18,9 @@ public class Song implements AudioPlayable {
     private String tittle;
     private Person author;
     private AudioPlayableGenre genre;
-    private String duration;
+    private int duration;
 
-    public Song(String tittle, Person author, AudioPlayableGenre genre, String duration) {
+    public Song(String tittle, Person author, AudioPlayableGenre genre, int duration) {
         this.tittle = titleValidator(tittle);
         this.author = authorValidator(author);
         this.genre = genreValidator(genre);
@@ -43,23 +43,23 @@ public class Song implements AudioPlayable {
     }
 
     @Override
-    public String getDuration() {
+    public int getDuration() {
         return this.duration;
     }
 
     @Override
-    public void getDetails() {
+    public void printDetails() {
         String details = String.format("%s performed by %s ", this.tittle, this.author.getName());
         System.out.println(details);
     }
 
     private boolean isValidTittle(String tittle) {
-        return tittle != null && !tittle.isEmpty();
+        return tittle != null && !tittle.isBlank();
     }
 
-    private String titleValidator(String title) {
+    private String titleValidator(String tittle) {
         if (isValidTittle(tittle)) {
-            return title;
+            return tittle;
         }
         System.out.println(INVALID_PARAMETER_MESSAGE);
         throw new IllegalArgumentException("title");
@@ -89,16 +89,26 @@ public class Song implements AudioPlayable {
         throw new IllegalArgumentException("genre");
     }
 
-    private boolean isValidDuration(String duration) {
-        return duration != null;//todo regex matching
+    private boolean isValidDuration(int duration) {
+        return duration > 0;//todo regex matching
     }
 
-    private String durationValidator(String duration) {
+    private int durationValidator(int duration) {
         if (isValidDuration(duration)) {
             return duration;
         }
         System.out.println(INVALID_PARAMETER_MESSAGE);
         throw new IllegalArgumentException("duration");
+    }
+
+    @Override
+    public String toString() {
+        return "Song{" +
+                "tittle='" + tittle + '\'' +
+                ", author=" + author +
+                ", genre=" + genre +
+                ", duration='" + duration + '\'' +
+                '}';
     }
 
 }

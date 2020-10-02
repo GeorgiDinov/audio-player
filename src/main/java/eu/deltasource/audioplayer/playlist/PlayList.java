@@ -3,7 +3,6 @@ package eu.deltasource.audioplayer.playlist;
 import eu.deltasource.audioplayer.playable.audioplayable.AudioPlayable;
 
 import java.util.List;
-import java.util.ListIterator;
 
 public interface PlayList {
 
@@ -13,14 +12,12 @@ public interface PlayList {
 
     int size();
 
-    List<AudioPlayable> getAll();
+    List<AudioPlayable> findAllByAuthorName(String authorName);
 
-    List<AudioPlayable> getAllByAuthorName(String authorName);
+    AudioPlayable findSongByTittle(String tittle);
 
-    AudioPlayable getByTittle(String tittle);
+    List<AudioPlayable> findAll();
 
-    int getPositionByTittle(String tittle);
-
-    ListIterator<AudioPlayable> getListIterator();
+    int findSongPosition(AudioPlayable audioPlayable);
 
 }

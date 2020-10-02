@@ -8,8 +8,8 @@ public interface AudioPlayable {
 
     Person getAuthor();
 
-    String getDuration();
+    int getDuration();
 
-    void getDetails();
+    void printDetails();
 
 }
