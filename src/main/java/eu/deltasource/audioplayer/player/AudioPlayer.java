@@ -27,8 +27,17 @@ import eu.deltasource.audioplayer.playlist.PlayList;
 
 public class AudioPlayer extends Player {
 
-    public AudioPlayer(PlayList playList) {
-        super(playList);
+    public AudioPlayer(PlayList playList, PlayListExplorer playListExplorer) {
+        super(playList, playListExplorer);
     }
 
+    @Override
+    public void playAll() {
+        this.playListExplorer.playAll();
+    }
+
+    @Override
+    public void setStopped(boolean isStopped) {
+        this.playListExplorer.setStopped(isStopped);
+    }
 }

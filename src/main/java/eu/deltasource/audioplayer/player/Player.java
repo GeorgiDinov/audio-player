@@ -5,16 +5,18 @@ import eu.deltasource.audioplayer.playlist.PlayList;
 
 import java.util.List;
 
-import static eu.deltasource.audioplayer.MyMessages.NO_RECORDS_FOUND;
-import static eu.deltasource.audioplayer.MyMessages.SONG_NOT_FOUND;
+import static eu.deltasource.audioplayer.util.MyMessages.NO_RECORDS_FOUND;
+import static eu.deltasource.audioplayer.util.MyMessages.SONG_NOT_FOUND;
 
 public abstract class Player {
 
     protected PlayList playList;
+    protected PlayListExplorer playListExplorer;
 
-    protected Player(PlayList playList) {
+    protected Player(PlayList playList, PlayListExplorer playListExplorer) {
         this.playList = playList;
-
+        this.playListExplorer = playListExplorer;
+        playListExplorer.setPlayList(this.playList);
     }
 
 
@@ -57,5 +59,10 @@ public abstract class Player {
     public List<AudioPlayable> findAll() {
         return this.playList.findAll();
     }
+
+
+    public abstract void playAll();
+
+    public abstract  void setStopped(boolean isStopped);
 
 }

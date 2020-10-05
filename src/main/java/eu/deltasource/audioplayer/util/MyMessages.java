@@ -1,4 +1,4 @@
-package eu.deltasource.audioplayer;
+package eu.deltasource.audioplayer.util;
 
 public final class MyMessages {
 

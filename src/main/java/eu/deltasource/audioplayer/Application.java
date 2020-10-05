@@ -52,51 +52,71 @@ package eu.deltasource.audioplayer;
 //        Напишете метод, който може да премахва песен.
 //-----------------------------------------------------------------------------------------
 
-import eu.deltasource.audioplayer.playable.audioplayable.Author;
-import eu.deltasource.audioplayer.playable.audioplayable.Song;
-import eu.deltasource.audioplayer.player.AudioPlayer;
 import eu.deltasource.audioplayer.player.Player;
-import eu.deltasource.audioplayer.playlist.SongList;
+import eu.deltasource.audioplayer.player.PlayerFactory;
 
-import static eu.deltasource.audioplayer.playable.audioplayable.AudioPlayableGenre.CLASSIC;
-import static eu.deltasource.audioplayer.playable.audioplayable.AudioPlayableGenre.POP;
-import static eu.deltasource.audioplayer.playable.audioplayable.AudioPlayableGenre.ROCK;
+import java.util.InputMismatchException;
+import java.util.Scanner;
+
+import static eu.deltasource.audioplayer.util.StandardPlayerSymbols.PAUSE;
+import static eu.deltasource.audioplayer.util.StandardPlayerSymbols.PLAY;
+import static eu.deltasource.audioplayer.util.StandardPlayerSymbols.STOP;
 
 public class Application {
 
     public static void main(String[] args) {
 
-        Player player = new AudioPlayer(new SongList());
+        Player player = PlayerFactory.createPlayer("audio");
 
-        Song song1 = new Song("FirstSong", new Author("FirstAuthor", 20), CLASSIC, 60);
-        Song song2 = new Song("SecondSong", new Author("FirstAuthor", 20), ROCK, 60);
-        Song song3 = new Song("ThirdSong", new Author("SecondAuthor", 30), POP, 60);
-        Song song4 = new Song("FourthSong", new Author("FirstAuthor", 20), CLASSIC, 60);
-        Song song5 = new Song("FifthSong", new Author("SecondAuthor", 30), ROCK, 60);
-        Song song6 = new Song("SixthSong", new Author("SecondAuthor", 30), POP, 60);
-        player.addNewSong(song1);
-        player.addNewSong(song2);
-        player.addNewSong(song3);
-        player.addNewSong(song4);
-        player.addNewSong(song5);
-        player.addNewSong(song6);
+        work(player);
 
+    }
 
-        System.out.println("Printing all songs of FirstAuthor");
-        player.findAllByAuthorName("FirstAuthor");
-        System.out.println("Size = " + player.getPlaylistSize());
-
-        System.out.print("Searching for song with name Test: ");
-        player.printSongByTittle("Test");
-
-        System.out.print("Searching for song with name FirstSong: ");
-        player.printSongByTittle("FirstSong");
-
-        if (player.removeSong(song1)) {
-            System.out.println("Removing Song: " + song1);
+    private static void work(Player player) {
+        boolean quit = false;
+        int choice;
+        printMenuOptions();
+        while (!quit) {
+            choice = getInt();
+            switch (choice) {
+                case 0:
+                    quit = true;
+                    break;
+                case 1:
+                    player.setStopped(false);
+                    new Thread(player::playAll).start();
+                    break;
+                case 5:
+                    player.setStopped(true);
+                    printMenuOptions();
+                    break;
+                default:
+                    break;
+            }
         }
-        System.out.println("Size = " + player.getPlaylistSize());
+    }
 
+    private static void printMenuOptions() {
+        System.out.println(
+                "Press: \n" +
+                        "\t0 -> to Quit The Application\n" +
+                        "\t1 -> to " + PLAY + "\n" +
+                        "\t2 -> to " + PLAY + " Shuffled\n" +
+                        "\t3 -> to " + PAUSE + " / " + PLAY + "\n" +
+                        "\t4 -> to " + STOP + "\n" +
+                        "\t5 -> to print the Menu Options\n");
+    }
+
+    private static int getInt() {
+        Scanner scanner = new Scanner(System.in);
+        while (true) {
+            try {
+                System.out.print("Choose operation: ");
+                return scanner.nextInt();
+            } catch (InputMismatchException e) {
+                scanner.nextLine();
+            }
+        }
     }
 
 }

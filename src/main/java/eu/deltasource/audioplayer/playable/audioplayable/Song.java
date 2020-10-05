@@ -10,7 +10,7 @@ package eu.deltasource.audioplayer.playable.audioplayable;
 //        Напишете метод, който да извежда в конзолата форматирано заглавието на песента и
 //        автора.
 
-import static eu.deltasource.audioplayer.MyMessages.INVALID_PARAMETER_MESSAGE;
+import static eu.deltasource.audioplayer.util.MyMessages.INVALID_PARAMETER_MESSAGE;
 
 public class Song implements AudioPlayable {
 
@@ -48,9 +48,8 @@ public class Song implements AudioPlayable {
     }
 
     @Override
-    public void printDetails() {
-        String details = String.format("%s performed by %s ", this.tittle, this.author.getName());
-        System.out.println(details);
+    public String getDetails() {
+        return String.format("%s performed by %s ", this.tittle, this.author.getName());
     }
 
     private boolean isValidTittle(String tittle) {

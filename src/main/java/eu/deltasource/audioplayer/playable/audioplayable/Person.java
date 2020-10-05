@@ -1,7 +1,7 @@
 package eu.deltasource.audioplayer.playable.audioplayable;
 
-import static eu.deltasource.audioplayer.MyMessages.INVALID_AGE;
-import static eu.deltasource.audioplayer.MyMessages.INVALID_NAME;
+import static eu.deltasource.audioplayer.util.MyMessages.INVALID_AGE;
+import static eu.deltasource.audioplayer.util.MyMessages.INVALID_NAME;
 
 public abstract class Person {
 

@@ -10,6 +10,6 @@ public interface AudioPlayable {
 
     int getDuration();
 
-    void printDetails();
+    String getDetails();
 
 }
