@@ -63,6 +63,9 @@ public abstract class Player {
 
     public abstract void playAll();
 
-    public abstract  void setStopped(boolean isStopped);
+    public abstract void setStopped(boolean isStopped);
+
+    public abstract void setPaused(boolean isPaused);
+    public abstract void setShuffled(boolean isShuffled);
 
 }

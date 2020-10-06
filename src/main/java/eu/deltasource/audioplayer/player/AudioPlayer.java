@@ -40,4 +40,15 @@ public class AudioPlayer extends Player {
     public void setStopped(boolean isStopped) {
         this.playListExplorer.setStopped(isStopped);
     }
+
+    @Override
+    public void setPaused(boolean isPaused) {
+        this.playListExplorer.setPaused(isPaused);
+    }
+
+    @Override
+    public void setShuffled(boolean isShuffled) {
+        this.playListExplorer.setShuffled(isShuffled);
+    }
+
 }

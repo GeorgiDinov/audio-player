@@ -58,9 +58,8 @@ import eu.deltasource.audioplayer.player.PlayerFactory;
 import java.util.InputMismatchException;
 import java.util.Scanner;
 
-import static eu.deltasource.audioplayer.util.StandardPlayerSymbols.PAUSE;
-import static eu.deltasource.audioplayer.util.StandardPlayerSymbols.PLAY;
-import static eu.deltasource.audioplayer.util.StandardPlayerSymbols.STOP;
+import static eu.deltasource.audioplayer.util.Color.ANSI_WHITE;
+import static eu.deltasource.audioplayer.util.StandardPlayerSymbols.*;
 
 public class Application {
 
@@ -72,11 +71,13 @@ public class Application {
 
     }
 
+
     private static void work(Player player) {
         boolean quit = false;
         int choice;
         printMenuOptions();
         while (!quit) {
+
             choice = getInt();
             switch (choice) {
                 case 0:
@@ -84,10 +85,23 @@ public class Application {
                     break;
                 case 1:
                     player.setStopped(false);
+                    player.setPaused(false);
                     new Thread(player::playAll).start();
                     break;
-                case 5:
+                case 2:
                     player.setStopped(true);
+                    player.setPaused(false);
+                    player.setStopped(false);
+                    player.setShuffled(true);
+                    new Thread(player::playAll).start();
+                    break;
+                case 3:
+                    player.setPaused(true);
+                    break;
+                case 4:
+                    player.setStopped(true);
+                    break;
+                case 5:
                     printMenuOptions();
                     break;
                 default:
@@ -98,13 +112,15 @@ public class Application {
 
     private static void printMenuOptions() {
         System.out.println(
-                "Press: \n" +
+                ANSI_WHITE + "Press: \n" +
                         "\t0 -> to Quit The Application\n" +
                         "\t1 -> to " + PLAY + "\n" +
                         "\t2 -> to " + PLAY + " Shuffled\n" +
                         "\t3 -> to " + PAUSE + " / " + PLAY + "\n" +
                         "\t4 -> to " + STOP + "\n" +
-                        "\t5 -> to print the Menu Options\n");
+                        "\t5 -> to " + PLAY_NEXT + "\n" +
+                        "\t6 -> to " + PLAY_PREVIOUS + "\n" +
+                        "\t7 -> to print the Menu Options\n");
     }
 
     private static int getInt() {
