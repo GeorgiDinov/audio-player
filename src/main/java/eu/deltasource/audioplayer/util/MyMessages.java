@@ -10,6 +10,7 @@ public final class MyMessages {
 
     public static final String SONG_NOT_FOUND = "Song Not Found";
     public static final String NO_RECORDS_FOUND = "No Records Found";
+    public static final String NO_MORE_SONGS = "No More Songs";
 
     public static final String LAST_SONG_MESSAGE = "This is the last song!";
     public static final String FIRST_SONG_MESSAGE = "This is the first song!";

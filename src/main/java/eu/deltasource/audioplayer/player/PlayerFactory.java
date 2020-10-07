@@ -2,6 +2,7 @@ package eu.deltasource.audioplayer.player;
 
 import eu.deltasource.audioplayer.playable.audioplayable.Author;
 import eu.deltasource.audioplayer.playable.audioplayable.Song;
+import eu.deltasource.audioplayer.playlist.PlayList;
 import eu.deltasource.audioplayer.playlist.SongList;
 
 import static eu.deltasource.audioplayer.playable.audioplayable.AudioPlayableGenre.CLASSIC;
@@ -21,7 +22,9 @@ public class PlayerFactory {
 
 
     private static Player createAudioPlayer() {
-        Player player = new AudioPlayer(new SongList(), new PlayListExplorer());
+
+        PlayList songList = new SongList();
+        Player player = new AudioPlayer(songList, new PlayListExplorer(songList));
 
         Song song1 = new Song("FirstSong", new Author("FirstAuthor", 20), CLASSIC, 5);
         Song song2 = new Song("SecondSong", new Author("FirstAuthor", 20), ROCK, 5);

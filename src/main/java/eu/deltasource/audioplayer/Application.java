@@ -73,6 +73,7 @@ public class Application {
 
 
     private static void work(Player player) {
+        Thread thread;
         boolean quit = false;
         int choice;
         printMenuOptions();
@@ -84,16 +85,13 @@ public class Application {
                     quit = true;
                     break;
                 case 1:
-                    player.setStopped(false);
-                    player.setPaused(false);
-                    new Thread(player::playAll).start();
+                    thread = new Thread(player::playAll);
+                    thread.start();
                     break;
                 case 2:
-                    player.setStopped(true);
-                    player.setPaused(false);
-                    player.setStopped(false);
                     player.setShuffled(true);
-                    new Thread(player::playAll).start();
+                    thread = new Thread(player::playAll);
+                    thread.start();
                     break;
                 case 3:
                     player.setPaused(true);
@@ -102,6 +100,12 @@ public class Application {
                     player.setStopped(true);
                     break;
                 case 5:
+                    player.playNext(true);
+                    break;
+                case 6:
+                    player.playPrevious(true);
+                    break;
+                case 7:
                     printMenuOptions();
                     break;
                 default:

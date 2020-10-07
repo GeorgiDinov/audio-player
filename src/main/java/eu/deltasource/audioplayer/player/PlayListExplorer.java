@@ -1,6 +1,7 @@
 package eu.deltasource.audioplayer.player;
 
 import eu.deltasource.audioplayer.playable.audioplayable.AudioPlayable;
+import eu.deltasource.audioplayer.playable.audioplayable.Song;
 import eu.deltasource.audioplayer.playlist.PlayList;
 
 import java.util.Collections;
@@ -8,10 +9,14 @@ import java.util.List;
 
 import static eu.deltasource.audioplayer.util.Color.ANSI_CYAN;
 import static eu.deltasource.audioplayer.util.Color.ANSI_PURPLE;
-import static eu.deltasource.audioplayer.util.MyMessages.*;
+import static eu.deltasource.audioplayer.util.MyMessages.CURSOR_SHIFT;
+import static eu.deltasource.audioplayer.util.MyMessages.LEFT_DASH;
+import static eu.deltasource.audioplayer.util.MyMessages.NO_MORE_SONGS;
+import static eu.deltasource.audioplayer.util.MyMessages.RIGHT_DASH;
 import static eu.deltasource.audioplayer.util.StandardPlayerSymbols.PAUSE;
 import static eu.deltasource.audioplayer.util.StandardPlayerSymbols.PLAY;
 import static eu.deltasource.audioplayer.util.StandardPlayerSymbols.SPACE;
+import static eu.deltasource.audioplayer.util.StandardPlayerSymbols.STOP;
 
 public class PlayListExplorer {
 
@@ -19,38 +24,82 @@ public class PlayListExplorer {
     private PlayList playList;
     private List<AudioPlayable> songs;
 
+    public PlayListExplorer(PlayList playList) {
+        this.playList = playList;
+    }
+
+
     private AudioPlayable currentSong;
     private int currentSongIndex;
     private int currentSongCurrentDuration;
 
-    private boolean isPlaying;
     private boolean isStopped;
     private boolean isPaused;
     private boolean isShuffled;
 
-    public void setPlayList(PlayList playList) {
-        this.playList = playList;
-        this.songs = this.playList.findAll();
-    }
+    private boolean isNextSongWanted;
+    private boolean isPreviousSongWanted;
 
 
     public void playAll() {
-        this.isPlaying = true;
-
-
-        if (this.isShuffled) {
-            Collections.shuffle(songs);
-        }
-
-        for (int i = 0; i < songs.size(); i++) {
-            if (isStopped) {
+        this.songs = playList.findAll();
+        shuffleHandler();
+        int songIndex;
+        for (songIndex = 0; songIndex < this.songs.size(); songIndex++) {
+            if (stopIsOn()) {
                 break;
             }
-            currentSong = this.songs.get(i);
-            this.currentSongIndex = i;
-            this.playSong(currentSong);
+            if (pauseIsOn()) {
+                songIndex = this.pausedSongHandler();
+            }
+            if (this.isNextSongWanted) {
+                continue;
+            }
+
+            if (this.isPreviousSongWanted) {
+
+            }
+
+            this.currentSong = this.songs.get(songIndex);
+            this.currentSongIndex = songIndex;
+            this.playSong(this.currentSong);
         }
-        this.isPlaying = false;
+        printNoMoreSongsMessage(songIndex);
+    }
+
+    private void shuffleHandler() {
+        if (this.isShuffled) {
+            this.isShuffled = false;
+            Collections.shuffle(this.songs);
+        }
+    }
+
+    private boolean stopIsOn() {
+        if (this.isStopped) {
+            this.isStopped = false;
+            printStop();
+            return true;
+        }
+        return false;
+    }
+
+    private boolean pauseIsOn() {
+        if (this.isPaused) {
+            this.isPaused = false;
+            return true;
+        }
+        return false;
+    }
+
+
+    private int pausedSongHandler() {
+        this.playSong(this.currentSong);
+        int nextSongIndex = this.currentSongIndex + 1;
+        if (this.songIndexExists(nextSongIndex)) {
+            return nextSongIndex;
+        } else {
+            return -1;
+        }
     }
 
 
@@ -58,18 +107,23 @@ public class PlayListExplorer {
 
         int songDuration = song.getDuration();
         String songTittle = song.getTittle();
+
         while (songDuration >= 0) {
 
-            if (isPaused) {
+            if (this.isNextSongWanted) {
+                this.isNextSongWanted = false;
+                break;
+            }
+
+            if (this.isPaused) {
                 this.currentSongCurrentDuration = songDuration;
-                String info = this.outputFormatter(songTittle, songDuration);
-                System.out.print(info + PAUSE);
+                System.out.print(this.outputFormatter(songTittle, songDuration) + PAUSE);
+                this.currentSong = this.pausedSongBuilder();
                 isStopped = true;
                 break;
             }
 
-            String output = this.outputFormatter(songTittle, songDuration);
-            System.out.print(output + PLAY + CURSOR_SHIFT);
+            System.out.print(this.outputFormatter(songTittle, songDuration) + PLAY + CURSOR_SHIFT);
             songDuration--;
             try {
                 Thread.sleep(1000);
@@ -79,52 +133,52 @@ public class PlayListExplorer {
         }
     }
 
-    private void playPreviousSong() {
-        int nextSongIndex = currentSongIndex - 1;
-        AudioPlayable nextSong;
-        if (songIndexExists(nextSongIndex)) {
-            nextSong = this.songs.get(nextSongIndex);
-            playSong(nextSong);
-        } else {
-            System.out.println(FIRST_SONG_MESSAGE);
-        }
-    }
-
-    public void playNextSong() {
-        int nextSongIndex = currentSongIndex + 1;
-        AudioPlayable nextSong;
-        if (songIndexExists(nextSongIndex)) {
-            nextSong = this.songs.get(nextSongIndex);
-            playSong(nextSong);
-        } else {
-            System.out.println(LAST_SONG_MESSAGE);
-        }
-    }
 
     private String outputFormatter(String songTittle, int songDuration) {
         return SPACE + ANSI_PURPLE + songTittle +
                 LEFT_DASH + songDuration + RIGHT_DASH + ANSI_CYAN + SPACE;
     }
 
-
-    private boolean isPlaying() {
-        return this.isPlaying;
+    private AudioPlayable pausedSongBuilder() {
+        return new Song(currentSong.getTittle(), currentSong.getAuthor(),
+                currentSong.getGenre(), currentSongCurrentDuration);
     }
 
     private boolean songIndexExists(int index) {
         return index >= 0 && index < this.songs.size();
     }
 
+    private void printNoMoreSongsMessage(int index) {
+        if (index == this.songs.size()) {
+            System.out.println(NO_MORE_SONGS);
+        }
+    }
 
-    public void setStopped(boolean isStopped) {
+    private void printStop() {
+        if (!this.isPaused) {
+            System.out.println(SPACE + STOP);
+        }
+    }
+
+
+    public void setIsStopped(boolean isStopped) {
         this.isStopped = isStopped;
     }
 
-    public void setPaused(boolean isPaused) {
+    public void setIsPaused(boolean isPaused) {
         this.isPaused = isPaused;
     }
 
-    public void setShuffled(boolean isShuffled) {
+    public void setIsShuffled(boolean isShuffled) {
         this.isShuffled = isShuffled;
     }
+
+    public void isNextSongWanted(boolean isNextSongWanted) {
+        this.isNextSongWanted = isNextSongWanted;
+    }
+
+    public void isPreviousSongWanted(boolean isPreviousSongWanted) {
+        this.isPreviousSongWanted = isPreviousSongWanted;
+    }
+
 }

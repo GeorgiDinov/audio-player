@@ -16,7 +16,6 @@ public abstract class Player {
     protected Player(PlayList playList, PlayListExplorer playListExplorer) {
         this.playList = playList;
         this.playListExplorer = playListExplorer;
-        playListExplorer.setPlayList(this.playList);
     }
 
 
@@ -62,9 +61,10 @@ public abstract class Player {
 
 
     public abstract void playAll();
+    public abstract void playNext(boolean next);
+    public abstract void playPrevious(boolean previous);
 
     public abstract void setStopped(boolean isStopped);
-
     public abstract void setPaused(boolean isPaused);
     public abstract void setShuffled(boolean isShuffled);
 

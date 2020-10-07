@@ -36,19 +36,30 @@ public class AudioPlayer extends Player {
         this.playListExplorer.playAll();
     }
 
+
+    @Override
+    public void playNext(boolean next) {
+        this.playListExplorer.isNextSongWanted(next);
+    }
+
+    @Override
+    public void playPrevious(boolean previous) {
+        this.playListExplorer.isPreviousSongWanted(previous);
+    }
+
     @Override
     public void setStopped(boolean isStopped) {
-        this.playListExplorer.setStopped(isStopped);
+        this.playListExplorer.setIsStopped(isStopped);
     }
 
     @Override
     public void setPaused(boolean isPaused) {
-        this.playListExplorer.setPaused(isPaused);
+        this.playListExplorer.setIsPaused(isPaused);
     }
 
     @Override
     public void setShuffled(boolean isShuffled) {
-        this.playListExplorer.setShuffled(isShuffled);
+        this.playListExplorer.setIsShuffled(isShuffled);
     }
 
 }
